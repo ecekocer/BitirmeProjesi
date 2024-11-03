@@ -1,0 +1,70 @@
+﻿@model BitirmeProjesi.ViewModels.LoginViewModel
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        input[type="text"], input[type="password"] {
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 10px;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+            .register-link a {
+                color: #007bff;
+                text-decoration: none;
+            }
+
+                .register-link a:hover {
+                    text-decoration: underline;
+                }
+    </style>
+    <div class="login-container">
+        <h2>Giriş Yap</h2>
+        <form asp-action="Login" method="post">
+            <div class="mb-3">
+                <label for="username" class="form-label">Kullanıcı Adı</label>
+                <input asp-for="Username" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Şifre</label>
+                <input asp-for="Password" type="password" class="form-control" />
+            </div>
+            <div class="mb-3 form-check">
+                <input asp-for="RememberMe" type="checkbox" class="form-check-input" />
+                <label for="rememberMe" class="form-check-label">Beni Hatırla</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Giriş Yap</button>
+        </form>
+
+        <!-- Kayıt Ol Bağlantısı -->
+        <div class="register-link">
+            <p>Kayıt olmadınız mı? <a asp-controller="Account" asp-action="Register">Kayıt Ol</a></p>
+        </div>
+    </div>
