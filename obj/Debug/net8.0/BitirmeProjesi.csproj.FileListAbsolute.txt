@@ -137,3 +137,4 @@ D:\VİsualStudioProjects\BitirmeProjesi\BitirmeProjesi\obj\Debug\net8.0\ref\Biti
 D:\VİsualStudioProjects\BitirmeProjesi\BitirmeProjesi\obj\Debug\net8.0\BitirmeProjesi.MvcApplicationPartsAssemblyInfo.cs
 D:\VİsualStudioProjects\BitirmeProjesi\BitirmeProjesi\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 D:\VİsualStudioProjects\BitirmeProjesi\BitirmeProjesi\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.UI.dll
+D:\VİsualStudioProjects\BitirmeProjesi\BitirmeProjesi\obj\Debug\net8.0\BitirmeProjesi.sourcelink.json
