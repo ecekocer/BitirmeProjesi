@@ -2,30 +2,24 @@
     ViewData["Title"] = "Ana Sayfa";
 }
 
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
 
-    <style>
+<style>
+    #map {
+        height: calc(100vh - 75px);
+        width: 100%;
+    }
 
-        #map {
-            height: calc(100vh - 75px); /* Tam ekran yüksekliği */
-            width: 100%; /* Tam genişlik */
-        }
+    .popup-content {
+        width: 250px;
+    }
+</style>
+<div id="map"></div>
 
-
-        .popup-content {
-            width: 250px;
-        }
-    </style>
-
-
-    <div id="map"></div>
-
-
-    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
 <script>
-    var map = L.map('map').setView([38.925533, 34.866287], 7); // Türkiye'nin merkezine odaklanması
-
+    var map = L.map('map').setView([38.925533, 34.866287], 7);
     const mapUrl = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
 
     L.tileLayer(mapUrl, {
@@ -33,29 +27,17 @@
         attribution: '&copy; <a href="https://www.opentopomap.org/">OpenTopoMapaaaa</a> contributors'
     }).addTo(map);
 
-    // Türkiye GeoJSON verisini haritaya ekleme
-    fetch('turkey.geojson')
-        .then(response => response.json())
-        .then(data => {
-            L.geoJson(data, {
-                style: {
-                    color: "#ff7800",
-                    weight: 2
-                }
-            }).addTo(map);
-        });
-
     var popupOpen = false;
     var currentPopup = null;
+    
+    // Haritadaki tüm markerları tutacak bir dizi oluşturalım
+    var markers = [];
 
     function isPointInTurkey(lat, lng) {
-        // Türkiye'nin GeoJSON verisini kullanarak koordinatların Türkiye sınırları içerisinde olup olmadığını kontrol edin.
         const turkeyBounds = [
-            [36.0, 26.0],  // Güneybatı köşe (Lat, Lng)
-            [42.1, 45.0]   // Kuzeydoğu köşe (Lat, Lng)
+            [36.0, 26.0],
+            [42.1, 45.0]
         ];
-
-        // Enlem ve boylamın belirtilen sınırlar içinde olup olmadığını kontrol edin
         return lat >= turkeyBounds[0][0] && lat <= turkeyBounds[1][0] &&
             lng >= turkeyBounds[0][1] && lng <= turkeyBounds[1][1];
     }
@@ -66,7 +48,7 @@
             popupOpen = false;
             currentPopup = null;
         } else if (isPointInTurkey(e.latlng.lat, e.latlng.lng)) {
-            var latlng = e.latlng; // Tıklanan yerin koordinatlarını al
+            var latlng = e.latlng;
             showPopup(latlng);
         } else {
             alert('Sadece Türkiye sınırları içinde bir nokta seçebilirsiniz.');
@@ -75,20 +57,19 @@
 
     function showPopup(latlng) {
         var popupContent = `
-                            <div class="popup-content">
-                                <h5>Veri Düzenleme</h5>
-                                <p>Koordinatlar: ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}</p>
-                                <form>
-                                    <div class="form-group">
-                                        <label for="heavyMetalData">Ağır Metal Verisi:</label>
-                                        <input type="text" class="form-control" id="heavyMetalData" placeholder="Veri girin">
-                                    </div>
-                                    <button type="button" class="btn btn-primary" onclick="saveMarker(${latlng.lat}, ${latlng.lng})">Kaydet</button>
-                                </form>
-                            </div>
-                        `;
+                <div class="popup-content">
+                    <h5>Veri Düzenleme</h5>
+                    <p>Koordinatlar: ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}</p>
+                    <form>
+                        <div class="form-group">
+                            <label for="heavyMetalData">Ağır Metal Verisi:</label>
+                            <input type="text" class="form-control" id="heavyMetalData" placeholder="Veri girin">
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="saveMarker(${latlng.lat}, ${latlng.lng})">Kaydet</button>
+                    </form>
+                </div>
+            `;
 
-        // Popup'ı göster
         currentPopup = L.popup()
             .setLatLng(latlng)
             .setContent(popupContent)
@@ -97,10 +78,42 @@
     }
 
     function saveMarker(lat, lng) {
+        var heavyMetalValue = parseFloat(document.getElementById('heavyMetalData').value);
+
+        if (isNaN(heavyMetalValue)) {
+            alert('Lütfen geçerli bir sayısal değer giriniz.');
+            return;
+        }
+
         var latlng = L.latLng(lat, lng);
 
-        // Harita üzerinde işaretçi oluşturma
-        var marker = L.marker(latlng).addTo(map);
+        // Değere göre yarıçap hesaplama (minimum 5, maksimum 30 piksel)
+        var radius = Math.min(Math.max(heavyMetalValue * 2, 5), 30);
+
+        // Değere göre opaklık hesaplama (0.3 ile 0.8 arasında)
+        var opacity = Math.min(Math.max(heavyMetalValue / 100, 0.3), 0.8);
+
+        // Dairesel marker oluşturma
+        var circleMarker = L.circleMarker(latlng, {
+            radius: radius,
+            fillColor: '#ff7800',
+            color: '#000',
+            weight: 1,
+            opacity: 1,
+            fillOpacity: opacity
+        }).addTo(map);
+
+        // Marker'ı listeye ekle
+        markers.push(circleMarker);
+
+        // Marker'a tıklandığında veriyi gösterme
+        circleMarker.bindPopup(`
+                <div class="popup-content">
+                    <h6>Ağır Metal Verisi</h6>
+                    <p>Değer: ${heavyMetalValue}</p>
+                    <p>Koordinatlar: ${lat.toFixed(4)}, ${lng.toFixed(4)}</p>
+                </div>
+            `);
 
         // Popup'ı kapatma
         map.closePopup();
