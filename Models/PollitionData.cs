@@ -1,4 +1,4 @@
-namespace BitirmeProjesi.Models
+﻿namespace BitirmeProjesi.Models
 {
     public class PollitionData
     {
