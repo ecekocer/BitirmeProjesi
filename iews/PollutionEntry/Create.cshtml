@@ -1,0 +1,81 @@
+@model BitirmeProjesi.Models.PollutionData
+
+@{
+    ViewData["Title"] = "Veri Girişi";
+}
+
+<link rel="stylesheet" href="~/css/pollution-entry.css" />
+
+<div class="modern-container">
+    <div class="modern-form-container">
+        <div class="form-header">
+            <h2>Kirlilik Verisi Girişi</h2>
+            <p class="form-subtitle">Lütfen ölçüm değerlerini dikkatli bir şekilde giriniz</p>
+        </div>
+        
+        @if (TempData["Success"] != null)
+        {
+            <div class="success-message">
+                <i class="fas fa-check-circle"></i>
+                @TempData["Success"]
+            </div>
+        }
+
+        <form asp-action="Create" class="modern-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="form-row">
+                <div class="input-group">
+                    <label asp-for="Latitude">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Enlem
+                    </label>
+                    <input asp-for="Latitude" class="modern-input" placeholder="41.0082" />
+                    <span asp-validation-for="Latitude" class="validation-message"></span>
+                </div>
+
+                <div class="input-group">
+                    <label asp-for="Longitude">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Boylam
+                    </label>
+                    <input asp-for="Longitude" class="modern-input" placeholder="28.9784" />
+                    <span asp-validation-for="Longitude" class="validation-message"></span>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label asp-for="MetalType">
+                    <i class="fas fa-flask"></i>
+                    Metal Tipi
+                </label>
+                <select asp-for="MetalType" class="modern-input">
+                    <option value="">Metal Tipini Seçin</option>
+                    <option value="Kurşun">Kurşun (Pb)</option>
+                    <option value="Civa">Civa (Hg)</option>
+                    <option value="Kadmiyum">Kadmiyum (Cd)</option>
+                    <option value="Arsenik">Arsenik (As)</option>
+                </select>
+                <span asp-validation-for="MetalType" class="validation-message"></span>
+            </div>
+
+            <div class="input-group">
+                <label asp-for="Value">
+                    <i class="fas fa-vial"></i>
+                    Ölçüm Değeri (mg/kg)
+                </label>
+                <input asp-for="Value" class="modern-input" placeholder="0.00" />
+                <span asp-validation-for="Value" class="validation-message"></span>
+            </div>
+
+            <button type="submit" class="submit-button">
+                <i class="fas fa-save"></i>
+                Kaydet
+            </button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://kit.fontawesome.com/your-code.js" crossorigin="anonymous"></script>
+} 

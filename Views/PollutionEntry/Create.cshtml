@@ -1,0 +1,58 @@
+@model BitirmeProjesi.Models.PollutionData
+
+@{
+    ViewData["Title"] = "Veri Girişi";
+}
+
+<link rel="stylesheet" href="~/css/pollution-entry.css" />
+
+<div class="modern-container">
+    <div class="modern-form-container">
+        <h2>Kirlilik Verisi Girişi</h2>
+        
+        @if (TempData["Success"] != null)
+        {
+            <div class="success-message">
+                @TempData["Success"]
+            </div>
+        }
+
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="form-row">
+                <div class="input-group">
+                    <label asp-for="Latitude">Enlem</label>
+                    <input asp-for="Latitude" class="modern-input" placeholder="41.0082" />
+                    <span asp-validation-for="Latitude" class="validation-message"></span>
+                </div>
+
+                <div class="input-group">
+                    <label asp-for="Longitude">Boylam</label>
+                    <input asp-for="Longitude" class="modern-input" placeholder="28.9784" />
+                    <span asp-validation-for="Longitude" class="validation-message"></span>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label asp-for="MetalType">Metal Tipi</label>
+                <select asp-for="MetalType" class="modern-input">
+                    <option value="">Metal Tipini Seçin</option>
+                    <option value="Kurşun">Kurşun (Pb)</option>
+                    <option value="Civa">Civa (Hg)</option>
+                    <option value="Kadmiyum">Kadmiyum (Cd)</option>
+                    <option value="Arsenik">Arsenik (As)</option>
+                </select>
+                <span asp-validation-for="MetalType" class="validation-message"></span>
+            </div>
+
+            <div class="input-group">
+                <label asp-for="Value">Ölçüm Değeri (mg/kg)</label>
+                <input asp-for="Value" class="modern-input" placeholder="0.00" />
+                <span asp-validation-for="Value" class="validation-message"></span>
+            </div>
+
+            <button type="submit" class="submit-button">Kaydet</button>
+        </form>
+    </div>
+</div> 
