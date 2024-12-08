@@ -1,162 +1,296 @@
-.modern-container {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #f5f7fa;
-    padding: 2rem;
+/* Holographic theme variables */
+:root {
+    --holo-primary: #7B68EE;
+    --holo-secondary: #00CED1;
+    --holo-accent: #FF69B4;
+    --holo-gradient: linear-gradient(135deg, var(--holo-primary), var(--holo-secondary));
+    --holo-glass: rgba(255, 255, 255, 0.1);
 }
 
-.modern-form-container {
-    background: white;
-    padding: 2.5rem;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    width: 100%;
+body {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    min-height: 100vh;
+    color: #fff;
+}
+
+/* Page background with map */
+.container {
+    padding-top: 2rem;
+    position: relative;
+    z-index: 1;
+    min-height: calc(100vh - 60px);
+    background: url('https://iasbh.tmgrup.com.tr/d8b862/1200/627/1/0/816/426?u=https://isbh.tmgrup.com.tr/sbh/2021/11/07/dunya-kitalar-haritasi-kita-sinirlarini-iceren-dunya-siyasi-haritasi-e1-1636286239606.jpg') center/cover no-repeat;
+    background-attachment: fixed;
+    width: 100vw;
+    margin: 0;
+    max-width: none;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.container::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+        rgba(147, 75, 190, 0.9),   /* Mor */
+        rgba(41, 111, 144, 0.9),   /* Mavi */
+        rgba(147, 75, 190, 0.9)    /* Mor */
+    );
+    z-index: -1;
+}
+
+/* Map overlay for theme colors */
+.container::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        linear-gradient(45deg,
+            rgba(179, 132, 255, 0.4),  /* Açık Mor */
+            rgba(79, 158, 202, 0.4)    /* Açık Mavi */
+        );
+    z-index: -1;
+    mix-blend-mode: soft-light;
+}
+
+/* World map background */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('https://www.sosyalciniz.net/wp-content/uploads/2021/12/dunya-haritasi-dilsiz.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.1;
+    z-index: -1;
+    filter: brightness(2) contrast(0.8) hue-rotate(240deg);
+}
+
+.card {
+    background: rgba(40, 40, 65, 0.85) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(147, 75, 190, 0.3) !important;
+    border-radius: 15px !important;
+    box-shadow: 
+        0 10px 20px rgba(147, 75, 190, 0.2),
+        0 0 15px rgba(41, 111, 144, 0.15) !important;
+    margin: 2rem auto;
     max-width: 600px;
 }
 
-.form-header {
-    text-align: center;
-    margin-bottom: 2rem;
+.card-body {
+    border-radius: 15px;
+    padding: 2rem !important;
 }
 
-.form-header h2 {
-    color: #2c3e50;
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-}
-
-.form-subtitle {
-    color: #7f8c8d;
-    font-size: 0.9rem;
-}
-
-.modern-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-}
-
-.input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.input-group label {
-    color: #34495e;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.input-group label i {
-    color: #3498db;
-}
-
-.modern-input {
+/* Form styles */
+.form-outline .form-control,
+.form-outline input[type="number"] {
+    background-color: rgba(50, 50, 75, 0.8) !important;
+    border: 1px solid rgba(147, 75, 190, 0.4) !important;
+    color: #ffffff !important;
+    border-radius: 8px;
     padding: 0.8rem 1rem;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
     font-size: 1rem;
     transition: all 0.3s ease;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 }
 
-.modern-input:focus {
-    border-color: #3498db;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-    outline: none;
+.form-outline .form-control:focus,
+.form-outline input[type="number"]:focus {
+    border-color: #4F9ECA !important;
+    background-color: rgba(55, 55, 80, 0.9) !important;
+    box-shadow: 
+        0 0 10px rgba(147, 75, 190, 0.25),
+        0 0 20px rgba(41, 111, 144, 0.15) !important;
 }
 
-select.modern-input {
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 1em;
+.form-outline .form-label {
+    color: #ffffff !important;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 
-.validation-message {
-    color: #e74c3c;
-    font-size: 0.8rem;
-    margin-top: 0.25rem;
+.form-outline.active .form-label {
+    color: #4F9ECA !important;
+    text-shadow: 0 0 8px rgba(41, 111, 144, 0.3);
 }
 
-.submit-button {
-    background-color: #3498db;
-    color: white;
-    border: none;
-    padding: 1rem;
+.form-select {
+    background-color: rgba(50, 50, 75, 0.8) !important;
+    border: 1px solid rgba(147, 75, 190, 0.4) !important;
+    color: #ffffff !important;
     border-radius: 8px;
+    padding: 0.8rem 1rem;
     font-size: 1rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.form-select:focus {
+    border-color: #4F9ECA !important;
+    background-color: rgba(55, 55, 80, 0.9) !important;
+    box-shadow: 
+        0 0 10px rgba(147, 75, 190, 0.25),
+        0 0 20px rgba(41, 111, 144, 0.15) !important;
+}
+
+/* Button styles */
+.btn-primary {
+    background: linear-gradient(135deg, #934BBE, #296F90) !important;
+    border: none !important;
+    color: #ffffff !important;
     font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-top: 1rem;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+        0 4px 12px rgba(147, 75, 190, 0.3),
+        0 0 15px rgba(41, 111, 144, 0.2) !important;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 }
 
-.submit-button:hover {
-    background-color: #2980b9;
-    transform: translateY(-1px);
+.btn-primary:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, #296F90, #934BBE) !important;
+    box-shadow: 
+        0 6px 15px rgba(147, 75, 190, 0.35),
+        0 0 20px rgba(41, 111, 144, 0.25) !important;
 }
 
-.submit-button:active {
+.btn-primary:active {
     transform: translateY(0);
 }
 
-.success-message {
-    background-color: #2ecc71;
-    color: white;
-    padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+/* Text styles */
+.text-muted {
+    color: rgba(255, 255, 255, 0.7) !important;
 }
 
-.success-message i {
-    font-size: 1.2rem;
+h2.fw-bold {
+    background: linear-gradient(135deg, #B384FF, #4F9ECA);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    text-shadow: none;
 }
 
-/* Responsive Design */
+/* Alert styles */
+.alert {
+    background: rgba(40, 40, 65, 0.85) !important;
+    border: 1px solid rgba(147, 75, 190, 0.3) !important;
+    color: #ffffff !important;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    box-shadow: 
+        0 4px 12px rgba(147, 75, 190, 0.15),
+        0 0 20px rgba(41, 111, 144, 0.08);
+}
+
+.alert i {
+    color: #4F9ECA;
+    filter: drop-shadow(0 0 3px rgba(41, 111, 144, 0.3));
+}
+
+/* Validation styles */
+.text-danger {
+    color: #FF9ECD !important;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    text-shadow: 0 0 3px rgba(255, 158, 205, 0.3);
+}
+
+/* Input icons */
+.form-outline i {
+    background: linear-gradient(135deg, #B384FF, #4F9ECA);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 2px rgba(41, 111, 144, 0.3));
+}
+
+/* Animation keyframes */
+@keyframes holographic {
+    0% {
+        filter: hue-rotate(0deg) brightness(1);
+    }
+    50% {
+        filter: hue-rotate(180deg) brightness(1.2);
+    }
+    100% {
+        filter: hue-rotate(360deg) brightness(1);
+    }
+}
+
+/* Holographic effects */
+.holographic-text {
+    animation: holographic 10s infinite linear;
+}
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
-    .modern-container {
+    .container {
         padding: 1rem;
+        background-size: cover;
     }
-
-    .modern-form-container {
-        padding: 1.5rem;
+    
+    .card-body {
+        padding: 1.5rem !important;
     }
+    
+    .btn-primary {
+        padding: 0.8rem;
+    }
+} 
 
-    .form-row {
-        grid-template-columns: 1fr;
+/* Animation for form elements */
+@keyframes formGlow {
+    0% {
+        box-shadow: 
+            0 0 3px rgba(147, 75, 190, 0.2),
+            0 0 8px rgba(41, 111, 144, 0.15);
+    }
+    50% {
+        box-shadow: 
+            0 0 8px rgba(147, 75, 190, 0.25),
+            0 0 15px rgba(41, 111, 144, 0.2);
+    }
+    100% {
+        box-shadow: 
+            0 0 3px rgba(147, 75, 190, 0.2),
+            0 0 8px rgba(41, 111, 144, 0.15);
     }
 }
 
-/* Input placeholder styles */
-.modern-input::placeholder {
-    color: #bdc3c7;
+.form-control:focus, .form-select:focus {
+    animation: formGlow 2s infinite ease-in-out;
+} 
+
+/* Remove default number input arrows */
+.form-outline input[type="number"]::-webkit-inner-spin-button,
+.form-outline input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
-/* Focus styles for better accessibility */
-.modern-input:focus::placeholder {
-    opacity: 0.7;
-}
-
-/* Hover effects */
-.modern-input:hover {
-    border-color: #bdc3c7;
+.form-outline input[type="number"] {
+    -moz-appearance: textfield;
 } 

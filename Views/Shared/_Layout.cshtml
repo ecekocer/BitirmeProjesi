@@ -2,91 +2,72 @@
 <html lang="tr">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title</title>
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-
-    <!-- Özel CSS -->
-    <style>
-
-        body {
-            background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
-            min-height: 100vh;
-        }
-        .login-container {
-            background: rgba(255, 255, 255, 0.8); /* Şeffaf kart arka planı */
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-            max-width: 400px;
-            width: 100%;
-        }
-
-        .form-floating input {
-            border-radius: 10px;
-        }
-
-        .login-btn {
-            background-color: #ff5722; /* Göz alıcı bir buton rengi */
-            border: none;
-            border-radius: 10px;
-            padding: 10px 20px;
-            font-size: 1.2rem;
-        }
-
-            .login-btn:hover {
-                background-color: #e64a19;
-            }
-
-        .navbar {
-            background-color: #007bff;
-            padding: 1rem;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-            height:75px;
-        }
-
-            .navbar a {
-                color: white;
-                margin-right: 20px;
-                text-decoration: none;
-                font-size: 1.2rem;
-            }
-
-        footer {
-            background-color: #f8f9fa;
-            padding: 1rem;
-            text-align: center;
-            width: 100%;
-            z-index: 1000;
-        }
-    </style>
-    <link rel="stylesheet" href="~/css/holographic.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BitirmeProjesi</title>
+    <!-- Material Design Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BitirmeProjesi.styles.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
-<body>
-
-
-    <nav class="navbar">
-        <div class="navbar-brand">Türkiye Ağır Metal Verileri</div>
-        <div>
-            <a href="/">Ana Sayfa</a>
-            <a href="/Account/Login">Giriş Yap</a>
-            <a href="/Account/Register">Kayıt Ol</a>
+<body class="holographic-bg">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand holographic-text" href="/">
+                <i class="fas fa-leaf me-2"></i>
+                EcoTrack
+            </a>
+            <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarNav">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Action"].ToString() == "Index" ? "active" : "")" href="/">
+                            <i class="fas fa-home me-2"></i>Ana Sayfa
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Action"].ToString() == "Create" ? "active" : "")" href="/PollutionEntry/Create">
+                            <i class="fas fa-plus-circle me-2"></i>Veri Girişi
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Action"].ToString() == "Map" ? "active" : "")" href="/PollutionEntry/Map">
+                            <i class="fas fa-map-marked-alt me-2"></i>Harita
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Action"].ToString() == "Statistics" ? "active" : "")" href="/PollutionEntry/Statistics">
+                            <i class="fas fa-chart-bar me-2"></i>İstatistikler
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
+    <main role="main">
         @RenderBody()
-        <!--
-      <footer>
-          &copy; 2024 Türkiye Ağır Metal Verileri | <a class="footer-link" href="#">İletişim</a>
-      </footer>
-      -->
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </main>
+
+    <!-- MDB JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        // Holographic background animation
+        document.addEventListener('mousemove', function(e) {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            document.documentElement.style.setProperty('--mouse-x', x);
+            document.documentElement.style.setProperty('--mouse-y', y);
+        });
+    </script>
 </body>
 </html>

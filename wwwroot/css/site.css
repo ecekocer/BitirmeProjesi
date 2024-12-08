@@ -20,3 +20,149 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+:root {
+    --holo-primary: #D4A5FF;    /* Açık lavanta */
+    --holo-secondary: #89CFF0;  /* Bebek mavisi */
+    --holo-accent: #FFB2E6;     /* Açık pembe */
+    --holo-dark: #483D8B;       /* Orta ton mor */
+}
+
+html, body {
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+::-webkit-scrollbar {
+    display: none;
+}
+
+.holographic-bg {
+    background: linear-gradient(
+        135deg,
+        #6A5ACD,  /* Slate mavi */
+        #483D8B,  /* Orta mor */
+        #7B68EE   /* Orta lavanta */
+    );
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.holographic-bg::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(212, 165, 255, 0.15),  /* Açık lavanta */
+        rgba(137, 207, 240, 0.15),  /* Bebek mavisi */
+        rgba(255, 178, 230, 0.15)   /* Açık pembe */
+    );
+    pointer-events: none;
+    z-index: 0;
+}
+
+main {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    padding-top: 65px;
+}
+
+/* Selection styles */
+::selection {
+    background: rgba(212, 165, 255, 0.4);
+    color: #fff;
+}
+
+/* Focus styles */
+*:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(212, 165, 255, 0.5) !important;
+}
+
+/* Animation for holographic elements */
+@keyframes holoPulse {
+    0% {
+        opacity: 0.9;
+        filter: hue-rotate(0deg) brightness(1.1);
+    }
+    50% {
+        opacity: 1;
+        filter: hue-rotate(30deg) brightness(1.3);
+    }
+    100% {
+        opacity: 0.9;
+        filter: hue-rotate(0deg) brightness(1.1);
+    }
+}
+
+.holographic-text {
+    background: linear-gradient(
+        45deg,
+        #D4A5FF,  /* Açık lavanta */
+        #89CFF0,  /* Bebek mavisi */
+        #FFB2E6   /* Açık pembe */
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: holoPulse 3s infinite ease-in-out;
+    text-shadow: 
+        0 0 10px rgba(212, 165, 255, 0.5),
+        0 0 20px rgba(137, 207, 240, 0.3);
+}
+
+/* Navbar styles for all pages */
+.navbar {
+    background: rgba(40, 40, 65, 0.95) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(147, 75, 190, 0.3);
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+    padding: 0.7rem 1.5rem !important;
+    min-height: 65px;
+}
+
+.navbar-brand {
+    color: #ffffff !important;
+    text-shadow: 0 0 10px rgba(147, 75, 190, 0.3);
+    font-size: 1.5rem !important;
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+}
+
+.nav-link {
+    color: #ffffff !important;
+    text-shadow: 0 0 10px rgba(147, 75, 190, 0.3);
+    font-size: 1.1rem !important;
+    padding: 0.6rem 1.2rem !important;
+    margin: 0 0.2rem;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #B384FF !important;
+    background: rgba(147, 75, 190, 0.1);
+    border-radius: 6px;
+    transform: translateY(-1px);
+}
+
+.navbar-toggler {
+    padding: 0.6rem;
+    border: 1.5px solid rgba(147, 75, 190, 0.4) !important;
+}
+
+.navbar-toggler-icon {
+    width: 1.5em;
+    height: 1.5em;
+}
