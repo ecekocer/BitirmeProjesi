@@ -1,0 +1,65 @@
+@{
+    ViewData["Title"] = "Kirlilik Veri Girişi";
+}
+
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="fw-bold mb-4 text-center">Kirlilik Veri Girişi</h2>
+            <form asp-action="PollutionEntry" method="post">
+                <!-- Enlem -->
+                <div class="form-outline mb-4">
+                    <label class="form-label" for="latitude">Enlem</label>
+                    <input type="number" step="0.000001" class="form-control" id="latitude" name="Latitude" required>
+                </div>
+
+                <!-- Boylam -->
+                <div class="form-outline mb-4">
+                    <label class="form-label" for="longitude">Boylam</label>
+                    <input type="number" step="0.000001" class="form-control" id="longitude" name="Longitude" required>
+                </div>
+
+                <!-- Metal Type Selection -->
+                <div class="form-outline mb-4">
+                    <label class="form-label" for="metalType">Metal Tipi</label>
+                    <select class="form-select" id="metalType" name="MetalType" required>
+                        <option value="">Metal tipi seçiniz</option>
+                        <option value="Arsenik">Arsenik (As)</option>
+                        <option value="Kadmiyum">Kadmiyum (Cd)</option>
+                        <option value="Krom">Krom (Cr)</option>
+                        <option value="Bakır">Bakır (Cu)</option>
+                        <option value="Civa">Civa (Hg)</option>
+                        <option value="Nikel">Nikel (Ni)</option>
+                        <option value="Kurşun">Kurşun (Pb)</option>
+                        <option value="Çinko">Çinko (Zn)</option>
+                    </select>
+                </div>
+
+                <!-- Metal Value with Unit -->
+                <div class="form-outline mb-4">
+                    <label class="form-label" for="metalValue">Metal Değeri</label>
+                    <div class="input-group">
+                        <input type="number" step="0.01" class="form-control" id="metalValue" name="MetalValue" required>
+                        <span class="input-group-text" id="metalUnit">mg/L</span>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('metalType').addEventListener('change', function() {
+        const unit = "mg/L";  // Tüm metaller için birim mg/L
+        document.getElementById('metalUnit').textContent = unit;
+    });
+</script>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pollution-entry.css" />
+} 
