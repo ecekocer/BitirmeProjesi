@@ -17,7 +17,7 @@
         }
 
         input[type="text"], input[type="password"] {
-            margin-bottom: 20px;
+            margin-bottom: 5px;
         }
 
         .btn-primary {
@@ -30,25 +30,68 @@
             margin-top: 20px;
         }
 
-            .register-link a {
-                color: #007bff;
-                text-decoration: none;
-            }
+        .register-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
 
-                .register-link a:hover {
-                    text-decoration: underline;
-                }
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .validation-summary-errors {
+            color: #dc3545;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .validation-summary-errors ul {
+            margin-bottom: 0;
+            padding-left: 20px;
+        }
+
+        .field-validation-error {
+            color: #dc3545;
+            font-size: 0.875rem;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .alert {
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
     </style>
     <div class="login-container">
         <h2>Giriş Yap</h2>
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                @ViewBag.Error
+            </div>
+        }
         <form asp-action="Login" method="post">
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
             <div class="mb-3">
                 <label for="username" class="form-label">Kullanıcı Adı</label>
                 <input asp-for="Username" class="form-control" />
+                <span asp-validation-for="Username" class="field-validation-error"></span>
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Şifre</label>
                 <input asp-for="Password" type="password" class="form-control" />
+                <span asp-validation-for="Password" class="field-validation-error"></span>
             </div>
             <div class="mb-3 form-check">
                 <input asp-for="RememberMe" type="checkbox" class="form-check-input" />
@@ -57,8 +100,11 @@
             <button type="submit" class="btn btn-primary">Giriş Yap</button>
         </form>
 
-        <!-- Kayıt Ol Bağlantısı -->
         <div class="register-link">
             <p>Kayıt olmadınız mı? <a asp-controller="Account" asp-action="Register">Kayıt Ol</a></p>
         </div>
     </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
