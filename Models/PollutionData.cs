@@ -1,6 +1,6 @@
 ﻿namespace BitirmeProjesi.Models
 {
-    public class PollitionData
+    public class PollutionData
     {
         public int Id { get; set; }
         public int Latitude { get; set; }

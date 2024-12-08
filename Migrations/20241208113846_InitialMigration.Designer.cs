@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BitirmeProjesi.Migrations
 {
     [DbContext(typeof(BitirmeProjesiiContext))]
-    [Migration("20241103202932_CreateProductTable")]
-    partial class CreateProductTable
+    [Migration("20241208113846_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace BitirmeProjesi.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("BitirmeProjesi.Models.Product", b =>
+            modelBuilder.Entity("BitirmeProjesi.Models.PollutionData", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -33,20 +33,37 @@ namespace BitirmeProjesi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ProductDescription")
+                    b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProductName")
+                    b.Property<DateTime>("DataRecorded")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnteredBy")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProductPrice")
+                    b.Property<int>("Latitude")
                         .HasColumnType("int");
+
+                    b.Property<int>("Longitude")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MetalType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Region")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Value")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products");
+                    b.ToTable("PollutionDatas");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

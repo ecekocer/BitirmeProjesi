@@ -12,7 +12,8 @@ namespace BitirmeProjesi.Models
         }
 
         // Kendi tablolarınızı burada tanımlayabilirsiniz
-         //public DbSet<Product> Products { get; set; }
+        public DbSet<PollutionData> PollutionDatas { get; set; }
+                 //public DbSet<Product> Products { get; set; }
         // public DbSet<Customer> Customers { get; set; }
     }
 }
