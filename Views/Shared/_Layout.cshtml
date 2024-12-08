@@ -40,6 +40,29 @@
                         </a>
                     </li>
                 </ul>
+                <ul class="navbar-nav ms-auto">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link nav-auth-link" asp-controller="Account" asp-action="Logout">
+                                <i class="fas fa-sign-out-alt me-2"></i>Çıkış Yap
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link nav-auth-link" asp-controller="Account" asp-action="Login">
+                                <i class="fas fa-sign-in-alt me-2"></i>Giriş Yap
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-auth-link" asp-controller="Account" asp-action="Register">
+                                <i class="fas fa-user-plus me-2"></i>Kayıt Ol
+                            </a>
+                        </li>
+                    }
+                </ul>
             </div>
         </div>
     </nav>
