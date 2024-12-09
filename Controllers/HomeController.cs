@@ -1,21 +1,46 @@
 using BitirmeProjesi.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 
 namespace BitirmeProjesi.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly BitirmeProjesiiContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(BitirmeProjesiiContext context)
         {
-            _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPollutionData()
+        {
+            try
+            {
+                var data = await _context.PollutionDatas
+                    .Select(p => new
+                    {
+                        p.Latitude,
+                        p.Longitude,
+                        p.MetalType,
+                        p.Value,
+                        p.DataRecorded
+                    })
+                    .ToListAsync();
+
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Veriler alınırken bir hata oluştu");
+            }
         }
 
         public IActionResult Privacy()

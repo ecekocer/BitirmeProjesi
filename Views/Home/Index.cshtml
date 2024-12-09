@@ -17,7 +17,16 @@
     .popup-content {
         width: 250px;
     }
+
+    .marker-cluster div {
+        background-color: rgba(0, 0, 128, 0.3) !important;
+    }
+
+    .marker-cluster span {
+        color: white;
+    }
 </style>
+
 <div id="map"></div>
 
 <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
@@ -30,7 +39,7 @@
 
     L.tileLayer(mapUrl, {
         maxZoom: 18,
-        attribution: '&copy; <a href="https://www.opentopomap.org/">OpenTopoMapaaaa</a> contributors'
+        attribution: '&copy; <a href="https://www.opentopomap.org/">OpenTopoMap</a> contributors'
     }).addTo(map);
 
     var popupOpen = false;
@@ -62,133 +71,55 @@
     });
 
     function showPopup(latlng) {
-        // Türkiye koordinatları içindeyse direkt PollutionEntry/Create sayfasına yönlendir
         window.location.href = `/PollutionEntry/Create?latitude=${latlng.lat.toFixed(6)}&longitude=${latlng.lng.toFixed(6)}`;
     }
 
-    // Marker cluster group oluşturma kısmını güncelle
+    // Marker cluster group oluşturma
     var markerClusterGroup = L.markerClusterGroup({
         maxClusterRadius: 80,
         iconCreateFunction: function(cluster) {
             var childCount = cluster.getChildCount();
-            
-            // Tüm cluster'lar için aynı boyut ve renk kullanılacak
-            var size = childCount * 15;
-            var color = '#000080'; // Koyu mavi
-            var circleSize = childCount * 15;
-
-            if(childCount > 10){
-                circleSize = 100;
-                size = 100;
-            }
-
+            var size = 40;
             return L.divIcon({
-                html: '<div style="background-color: rgba(0, 0, 128, 0.4); width: ' + circleSize + 'px; height: ' + circleSize + 'px;"></div>',
+                html: '<div style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><span>' + childCount + '</span></div>',
                 className: 'marker-cluster',
                 iconSize: new L.Point(size, size)
             });
         }
     });
 
-    // CSS stilini ekle
-    var style = document.createElement('style');
-    style.textContent = `
-        .marker-cluster {
-            text-align: center;
-        }
-        .marker-cluster div {
-            width: 100%;
-            height: 100%;
-            border-radius: 50% !important;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: white;
-            border: 2px solid white;
-        }
-    `;
-    document.head.appendChild(style);
-
     map.addLayer(markerClusterGroup);
 
-    // markers dizisini güncelleme
-    var markers = markerClusterGroup;
+    // Veritabanından verileri çekip marker'ları oluştur
+    function loadPollutionData() {
+        fetch('/Home/GetPollutionData')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(item => {
+                    var circleMarker = L.circleMarker([item.latitude, item.longitude], {
+                        radius: 8,
+                        fillColor: '#000080',  // Koyu mavi
+                        color: '#000080',
+                        weight: 1,
+                        opacity: 1,
+                        fillOpacity: 0.4
+                    });
 
-    // Basitleştirilmiş createRandomMarkers fonksiyonu
-    function createRandomMarkers(count) {
-        const turkeyBounds = {
-            minLat: 36.0,
-            maxLat: 42.1,
-            minLng: 26.0,
-            maxLng: 45.0
-        };
+                    circleMarker.bindPopup(`
+                        <div class="popup-content">
+                            <h6>Ağır Metal Verisi</h6>
+                            <p>Metal: ${item.metalType}</p>
+                            <p>Değer: ${item.value.toFixed(6)} mg/L</p>
+                            <p>Tarih: ${new Date(item.dataRecorded).toLocaleDateString('tr-TR')}</p>
+                            <p>Koordinatlar: ${item.latitude.toFixed(6)}, ${item.longitude.toFixed(6)}</p>
+                        </div>
+                    `);
 
-        for (let i = 0; i < count; i++) {
-            const lat = Math.random() * (turkeyBounds.maxLat - turkeyBounds.minLat) + turkeyBounds.minLat;
-            const lng = Math.random() * (turkeyBounds.maxLng - turkeyBounds.minLng) + turkeyBounds.minLng;
-            
-            if (isPointInTurkey(lat, lng)) {
-                const heavyMetalValue = Math.random() * 100;
-                
-                const circleMarker = L.circleMarker([lat, lng], {
-                    radius: 8,
-                    fillColor: '#000080',  // Koyu mavi
-                    color: '#000080',
-                    weight: 0,
-                    opacity: 1,
-                    fillOpacity: 0.4  // %50 saydamlık
+                    markerClusterGroup.addLayer(circleMarker);
                 });
-
-                circleMarker.bindPopup(`
-                    <div class="popup-content">
-                        <h6>Ağır Metal Verisi</h6>
-                        <p>Değer: ${heavyMetalValue.toFixed(2)}</p>
-                        <p>Koordinatlar: ${lat.toFixed(4)}, ${lng.toFixed(4)}</p>
-                    </div>
-                `);
-
-                markerClusterGroup.addLayer(circleMarker);
-            } else {
-                i--;
-            }
-        }
+            });
     }
 
-    // Basitleştirilmiş saveMarker fonksiyonu
-    function saveMarker(lat, lng) {
-        var heavyMetalValue = parseFloat(document.getElementById('heavyMetalData').value);
-
-        if (isNaN(heavyMetalValue)) {
-            alert('Lütfen geçerli bir sayısal değer giriniz.');
-            return;
-        }
-
-        var latlng = L.latLng(lat, lng);
-
-        var circleMarker = L.circleMarker(latlng, {
-            radius: 8,
-            fillColor: '#000080',  // Koyu mavi
-            color: '#000080',
-            weight: 1,
-            opacity: 1,
-            fillOpacity: 0.5  // %50 saydamlık
-        });
-
-        circleMarker.bindPopup(`
-            <div class="popup-content">
-                <h6>Ağır Metal Verisi</h6>
-                <p>Değer: ${heavyMetalValue}</p>
-                <p>Koordinatlar: ${lat.toFixed(4)}, ${lng.toFixed(4)}</p>
-            </div>
-        `);
-
-        markerClusterGroup.addLayer(circleMarker);
-        map.closePopup();
-        popupOpen = false;
-        currentPopup = null;
-    }
-
-    // Sayfa yüklendiğinde 50 random marker oluştur
-    createRandomMarkers(250);
+    // Sayfa yüklendiğinde verileri yükle
+    loadPollutionData();
 </script>
