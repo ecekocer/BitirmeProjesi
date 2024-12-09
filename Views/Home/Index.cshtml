@@ -89,28 +89,18 @@
         iconCreateFunction: function(cluster) {
             var childCount = cluster.getChildCount();
             
-            // Marker sayısına göre boyut ve renk belirleme
-            var size, color;
-            
-            if (childCount < 10) {
-                size = 20;
-                color = '#4CAF50'; // Yeşil
-            } else if (childCount < 25) {
-                size = 30;
-                color = '#FFC107'; // Sarı
-            } else if (childCount < 50) {
-                size = 40;
-                color = '#FF9800'; // Turuncu
-            } else if (childCount < 100) {
-                size = 50;
-                color = '#FF5722'; // Turuncu-kırmızı
-            } else {
-                size = 60;
-                color = '#F44336'; // Kırmızı
+            // Tüm cluster'lar için aynı boyut ve renk kullanılacak
+            var size = childCount * 15;
+            var color = '#000080'; // Koyu mavi
+            var circleSize = childCount * 15;
+
+            if(childCount > 10){
+                circleSize = 100;
+                size = 100;
             }
 
             return L.divIcon({
-                html: '<div style="background-color:' + color + '"><span>' + childCount + '</span></div>',
+                html: '<div style="background-color: rgba(0, 0, 128, 0.4); width: ' + circleSize + 'px; height: ' + circleSize + 'px;"></div>',
                 className: 'marker-cluster',
                 iconSize: new L.Point(size, size)
             });
@@ -126,7 +116,7 @@
         .marker-cluster div {
             width: 100%;
             height: 100%;
-            border-radius: 50%;
+            border-radius: 50% !important;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -159,12 +149,12 @@
                 const heavyMetalValue = Math.random() * 100;
                 
                 const circleMarker = L.circleMarker([lat, lng], {
-                    radius: 8,  // Sabit boyut
-                    fillColor: '#ff7800',  // Sabit renk
-                    color: '#000',
-                    weight: 1,
+                    radius: 8,
+                    fillColor: '#000080',  // Koyu mavi
+                    color: '#000080',
+                    weight: 0,
                     opacity: 1,
-                    fillOpacity: 0.6  // Sabit opaklık
+                    fillOpacity: 0.4  // %50 saydamlık
                 });
 
                 circleMarker.bindPopup(`
@@ -194,12 +184,12 @@
         var latlng = L.latLng(lat, lng);
 
         var circleMarker = L.circleMarker(latlng, {
-            radius: 8,  // Sabit boyut
-            fillColor: '#ff7800',  // Sabit renk
-            color: '#000',
+            radius: 8,
+            fillColor: '#000080',  // Koyu mavi
+            color: '#000080',
             weight: 1,
             opacity: 1,
-            fillOpacity: 0.6  // Sabit opaklık
+            fillOpacity: 0.5  // %50 saydamlık
         });
 
         circleMarker.bindPopup(`
