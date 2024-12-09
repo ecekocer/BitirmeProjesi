@@ -9,6 +9,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BitirmeProjesi.styles.css" asp-append-version="true" />
+    <!-- Toastr CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body class="holographic-bg">
@@ -68,27 +70,16 @@
     </nav>
 
         <main role="main" class="pb-3">
-            @if (TempData["ToastMessage"] != null)
-            {
-                <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-                    <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
-                        <div class="toast-header bg-@(TempData["ToastType"] ?? "primary") text-white">
-                            <strong class="me-auto">Bildirim</strong>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
-                        </div>
-                        <div class="toast-body">
-                            @TempData["ToastMessage"]
-                        </div>
-                    </div>
-                </div>
-            }
             @RenderBody()
         </main>
+
     <!-- MDB JavaScript -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
 
     <script>
         // Holographic background animation
@@ -100,5 +91,19 @@
             document.documentElement.style.setProperty('--mouse-y', y);
         });
     </script>
+        @if (TempData["ToastMessage"] != null){
+                <script type="text/javascript">
+
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-center",
+                "timeOut": "10000"
+            };
+            toastr.@(TempData["ToastType"] ?? "success")('@TempData["ToastMessage"]');
+        </script>
+        }
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
