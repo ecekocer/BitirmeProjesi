@@ -12,9 +12,14 @@ namespace BitirmeProjesi.Controllers
             _context = context;
         }
 
-        public IActionResult Create()
+        public IActionResult Create(double? latitude, double? longitude)
         {
-            return View();
+            var model = new PollutionData
+            {
+                Latitude = latitude.HasValue ? (decimal)latitude.Value : 0m,
+                Longitude = longitude.HasValue ? (decimal)longitude.Value : 0m
+            };
+            return View(model);
         }
 
         [HttpPost]

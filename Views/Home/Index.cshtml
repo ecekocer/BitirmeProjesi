@@ -62,25 +62,8 @@
     });
 
     function showPopup(latlng) {
-        var popupContent = `
-                <div class="popup-content">
-                    <h5>Veri Düzenleme</h5>
-                    <p>Koordinatlar: ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}</p>
-                    <form>
-                        <div class="form-group">
-                            <label for="heavyMetalData">Ağır Metal Verisi:</label>
-                            <input type="text" class="form-control" id="heavyMetalData" placeholder="Veri girin">
-                        </div>
-                        <button type="button" class="btn btn-primary" onclick="saveMarker(${latlng.lat}, ${latlng.lng})">Kaydet</button>
-                    </form>
-                </div>
-            `;
-
-        currentPopup = L.popup()
-            .setLatLng(latlng)
-            .setContent(popupContent)
-            .openOn(map);
-        popupOpen = true;
+        // Türkiye koordinatları içindeyse direkt PollutionEntry/Create sayfasına yönlendir
+        window.location.href = `/PollutionEntry/Create?latitude=${latlng.lat.toFixed(6)}&longitude=${latlng.lng.toFixed(6)}`;
     }
 
     // Marker cluster group oluşturma kısmını güncelle
