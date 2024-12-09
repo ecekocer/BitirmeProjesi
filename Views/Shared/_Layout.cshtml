@@ -67,10 +67,23 @@
         </div>
     </nav>
 
-    <main role="main">
-        @RenderBody()
-    </main>
-
+        <main role="main" class="pb-3">
+            @if (TempData["ToastMessage"] != null)
+            {
+                <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+                    <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header bg-@(TempData["ToastType"] ?? "primary") text-white">
+                            <strong class="me-auto">Bildirim</strong>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="toast-body">
+                            @TempData["ToastMessage"]
+                        </div>
+                    </div>
+                </div>
+            }
+            @RenderBody()
+        </main>
     <!-- MDB JavaScript -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

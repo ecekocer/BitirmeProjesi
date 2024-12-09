@@ -1,76 +1,73 @@
-@model BitirmeProjesi.Models.PollutionData
-
+@model BitirmeProjesi.Models.ViewModels.PollutionEntryViewModel
 @{
-    ViewData["Title"] = "Veri Girişi";
+    ViewData["Title"] = "Kirlilik Veri Girişi";
 }
-
-<link rel="stylesheet" href="~/css/pollution-entry.css" />
 
 <div class="container">
     <div class="card">
         <div class="card-body">
-            <div class="text-center mb-4">
-                <h2 class="fw-bold mb-1">Kirlilik Verisi Girişi</h2>
-                <p class="text-muted">Lütfen ölçüm değerlerini dikkatli bir şekilde giriniz</p>
-            </div>
+            <h2 class="fw-bold mb-4 text-center">Kirlilik Veri Girişi</h2>
 
-            @if (TempData["Success"] != null)
+            @if (!ViewData.ModelState.IsValid)
             {
-                <div class="alert alert-success d-flex align-items-center" role="alert">
-                    <i class="fas fa-check-circle me-2"></i>
-                    @TempData["Success"]
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <li>@modelError.ErrorMessage</li>
+                        }
+                    </ul>
                 </div>
             }
 
-            <form asp-action="Create">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <div class="form-outline">
-                            <input asp-for="Latitude" type="number" step="any" id="latitude" class="form-control" />
-                            <label class="form-label" asp-for="Latitude">
-                                <i class="fas fa-map-marker-alt me-2"></i>Enlem
-                            </label>
-                            <span asp-validation-for="Latitude" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-outline">
-                            <input asp-for="Longitude" type="number" step="any" id="longitude" class="form-control" />
-                            <label class="form-label" asp-for="Longitude">
-                                <i class="fas fa-map-marker-alt me-2"></i>Boylam
-                            </label>
-                            <span asp-validation-for="Longitude" class="text-danger"></span>
-                        </div>
-                    </div>
+            <form asp-action="Create" asp-controller="PollutionEntry" method="post">
+                @Html.AntiForgeryToken()
+                
+                <!-- Enlem -->
+                <div class="form-outline mb-4">
+                    <label asp-for="Latitude" class="form-label">Enlem</label>
+                    <input asp-for="Latitude" class="form-control" type="number" step="0.000001" required>
+                    <span asp-validation-for="Latitude" class="text-danger"></span>
                 </div>
 
+                <!-- Boylam -->
                 <div class="form-outline mb-4">
-                    <select asp-for="MetalType" class="form-select">
-                        <option value="">Metal Tipini Seçin</option>
-                        <option value="Kurşun">Kurşun (Pb)</option>
-                        <option value="Civa">Civa (Hg)</option>
-                        <option value="Kadmiyum">Kadmiyum (Cd)</option>
+                    <label asp-for="Longitude" class="form-label">Boylam</label>
+                    <input asp-for="Longitude" class="form-control" type="number" step="0.000001" required>
+                    <span asp-validation-for="Longitude" class="text-danger"></span>
+                </div>
+
+                <!-- Metal Type Selection -->
+                <div class="form-outline mb-4">
+                    <label asp-for="MetalType" class="form-label">Metal Tipi</label>
+                    <select asp-for="MetalType" class="form-select" required>
+                        <option value="">Metal tipi seçiniz</option>
                         <option value="Arsenik">Arsenik (As)</option>
+                        <option value="Kadmiyum">Kadmiyum (Cd)</option>
+                        <option value="Krom">Krom (Cr)</option>
+                        <option value="Bakır">Bakır (Cu)</option>
+                        <option value="Civa">Civa (Hg)</option>
+                        <option value="Nikel">Nikel (Ni)</option>
+                        <option value="Kurşun">Kurşun (Pb)</option>
+                        <option value="Çinko">Çinko (Zn)</option>
                     </select>
-                    <label class="form-label" asp-for="MetalType">
-                        <i class="fas fa-flask me-2"></i>Metal Tipi
-                    </label>
                     <span asp-validation-for="MetalType" class="text-danger"></span>
                 </div>
 
+                <!-- Metal Value with Unit -->
                 <div class="form-outline mb-4">
-                    <input asp-for="Value" type="number" step="0.01" id="value" class="form-control" />
-                    <label class="form-label" asp-for="Value">
-                        <i class="fas fa-vial me-2"></i>Ölçüm Değeri (mg/kg)
-                    </label>
+                    <label asp-for="Value" class="form-label">Metal Değeri</label>
+                    <div class="input-group">
+                        <input asp-for="Value" class="form-control" type="number" step="0.000001" required>
+                        <span class="input-group-text" id="metalUnit">mg/L</span>
+                    </div>
                     <span asp-validation-for="Value" class="text-danger"></span>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-lg w-100 ripple-surface">
-                    <i class="fas fa-save me-2"></i>Kaydet
-                </button>
+                <!-- Submit Button -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg">Kaydet</button>
+                </div>
             </form>
         </div>
     </div>
@@ -78,8 +75,14 @@
 
 @section Scripts {
     <script>
-        document.querySelectorAll('.form-outline').forEach((formOutline) => {
-            new mdb.Input(formOutline).init();
+        document.getElementById('MetalType').addEventListener('change', function() {
+            const unit = "mg/L";  // Tüm metaller için birim mg/L
+            document.getElementById('metalUnit').textContent = unit;
         });
     </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pollution-entry.css" />
 } 

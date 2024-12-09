@@ -1,8 +1,12 @@
 using BitirmeProjesi.Models;
+using BitirmeProjesi.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace BitirmeProjesi.Controllers
 {
+    [Authorize]
     public class PollutionEntryController : Controller
     {
         private readonly BitirmeProjesiiContext _context;
@@ -14,29 +18,49 @@ namespace BitirmeProjesi.Controllers
 
         public IActionResult Create(double? latitude, double? longitude)
         {
-            var model = new PollutionData
+            var viewModel = new PollutionEntryViewModel
             {
-                Latitude = latitude.HasValue ? (decimal)latitude.Value : 0m,
-                Longitude = longitude.HasValue ? (decimal)longitude.Value : 0m
+                Latitude = latitude.HasValue ? (float)latitude.Value : 0f,
+                Longitude = longitude.HasValue ? (float)longitude.Value : 0f
             };
-            return View(model);
+            return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Latitude,Longitude,MetalType,Value")] PollutionData pollutionData)
+        public async Task<IActionResult> Create(PollutionEntryViewModel viewModel)
         {
-            if (ModelState.IsValid)
+            try
             {
-                pollutionData.DataRecorded = DateTime.Now;
-                pollutionData.EnteredBy = User.Identity.Name;
-                
-                _context.Add(pollutionData);
-                await _context.SaveChangesAsync();
-                TempData["Success"] = "Veri başarıyla kaydedildi!";
-                return RedirectToAction(nameof(Create));
+                if (ModelState.IsValid)
+                {
+                    var pollutionData = new PollutionData
+                    {
+                        Latitude = viewModel.Latitude,
+                        Longitude = viewModel.Longitude,
+                        MetalType = viewModel.MetalType,
+                        Value = viewModel.Value,
+                        DataRecorded = DateTime.Now,
+                        EnteredById = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                        City = null,
+                        Region = null
+                    };
+                    
+                    _context.Add(pollutionData);
+                    await _context.SaveChangesAsync();
+                    
+                    TempData["ToastMessage"] = "Veri başarıyla kaydedildi!";
+                    TempData["ToastType"] = "success";
+                    return RedirectToAction("Index", "Home");
+                }
+
+                return View(viewModel);
             }
-            return View(pollutionData);
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "Veri kaydedilirken bir hata oluştu: " + ex.Message);
+                return View(viewModel);
+            }
         }
     }
 } 

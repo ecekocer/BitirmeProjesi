@@ -4,6 +4,7 @@ using BitirmeProjesi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BitirmeProjesi.Migrations
 {
     [DbContext(typeof(BitirmeProjesiiContext))]
-    partial class BitirmeProjesiiContextModelSnapshot : ModelSnapshot
+    [Migration("20241209002858_AddUserRelationship")]
+    partial class AddUserRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,8 +40,7 @@ namespace BitirmeProjesi.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("EnteredById")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Latitude")
                         .HasColumnType("decimal(18,2)");
@@ -57,8 +59,6 @@ namespace BitirmeProjesi.Migrations
                         .HasColumnType("float");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EnteredById");
 
                     b.ToTable("PollutionDatas");
                 });
@@ -259,17 +259,6 @@ namespace BitirmeProjesi.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("BitirmeProjesi.Models.PollutionData", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "EnteredByUser")
-                        .WithMany()
-                        .HasForeignKey("EnteredById")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("EnteredByUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

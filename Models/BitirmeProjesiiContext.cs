@@ -11,9 +11,29 @@ namespace BitirmeProjesi.Models
         {
         }
 
-        // Kendi tablolarınızı burada tanımlayabilirsiniz
         public DbSet<PollutionData> PollutionDatas { get; set; }
-                 //public DbSet<Product> Products { get; set; }
-        // public DbSet<Customer> Customers { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<PollutionData>()
+                .HasOne(p => p.EnteredByUser)
+                .WithMany()
+                .HasForeignKey(p => p.EnteredById)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PollutionData>()
+                .Property(p => p.Latitude)
+                .HasColumnType("float(53)");  // SQL Server'da double precision float
+
+            modelBuilder.Entity<PollutionData>()
+                .Property(p => p.Longitude)
+                .HasColumnType("float(53)");  // SQL Server'da double precision float
+
+            modelBuilder.Entity<PollutionData>()
+                .Property(p => p.Value)
+                .HasColumnType("float(53)");  // SQL Server'da double precision float
+        }
     }
 }
