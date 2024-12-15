@@ -200,7 +200,7 @@ namespace BitirmeProjesi.Controllers
                                        p.Value < 100 ? "Orta" :
                                        p.Value < 150 ? "Yüksek" : "Kritik"
                     })
-                    .OrderByDescending(p => p.DataRecorded)
+                    .OrderByDescending(p => p.Year)
                     .ToListAsync();
 
                 return Json(new { success = true, data = data });

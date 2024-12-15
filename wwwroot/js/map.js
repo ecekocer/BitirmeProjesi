@@ -113,10 +113,8 @@ function fetchLocationData(latitude, longitude, filters = {}) {
                     </div>
                 `).join('') : '<div class="text-white">Bu konumda filtrelere uygun veri bulunamadı.</div>';
 
-                // Update the side panel content
-                const filterPanel = document.querySelector('.filter-panel');
-                const recordsPanel = document.createElement('div');
-                recordsPanel.className = 'records-panel mt-4';
+                // Update records panel content
+                const recordsPanel = document.getElementById('recordsPanel');
                 recordsPanel.innerHTML = `
                     <h5 class="text-white mb-3">Konum Kayıtları</h5>
                     <div class="records-container">
@@ -124,15 +122,15 @@ function fetchLocationData(latitude, longitude, filters = {}) {
                     </div>
                 `;
 
-                // Remove existing records panel if any
-                const existingRecordsPanel = filterPanel.querySelector('.records-panel');
-                if (existingRecordsPanel) {
-                    existingRecordsPanel.remove();
-                }
-
-                filterPanel.appendChild(recordsPanel);
+                // Update add button click handler
+                const addDataButton = document.getElementById('addDataButton');
+                addDataButton.onclick = () => addNewData(latitude, longitude);
             }
         });
+}
+
+function addNewData(latitude, longitude) {
+    window.location.href = `/PollutionEntry/Create?latitude=${latitude}&longitude=${longitude}`;
 }
 
 function resetFilters() {

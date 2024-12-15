@@ -8,86 +8,6 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
 
-<style>
-    #map {
-        height: calc(100vh - 75px);
-        width: 100%;
-    }
-
-    .popup-content {
-        width: 250px;
-    }
-
-    .marker-cluster div {
-        background-color: rgba(0, 0, 128, 0.3) !important;
-    }
-
-    .marker-cluster span {
-        color: white;
-    }
-
-    .btn-link:focus {
-        box-shadow: none;
-    }
-
-    .btn-link:hover {
-        opacity: 0.8;
-    }
-
-    /* Collapse icon animasyonu */
-    [aria-expanded="true"] .fa-chevron-down {
-        transform: rotate(180deg);
-        transition: transform 0.3s ease;
-    }
-
-    [aria-expanded="false"] .fa-chevron-down {
-        transform: rotate(0deg);
-        transition: transform 0.3s ease;
-    }
-
-    .filter-header {
-        cursor: pointer;
-        padding: 10px;
-        user-select: none;
-    }
-
-    .filter-header:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-        border-radius: 5px;
-    }
-
-    .records-container {
-        max-height: calc(100vh - 400px);
-        overflow-y: auto;
-        padding-right: 10px;
-    }
-
-    .records-container::-webkit-scrollbar {
-        width: 8px;
-    }
-
-    .records-container::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 4px;
-    }
-
-    .records-container::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.3);
-        border-radius: 4px;
-    }
-
-    .records-container::-webkit-scrollbar-thumb:hover {
-        background: rgba(255, 255, 255, 0.4);
-    }
-
-    .pollution-record {
-        transition: transform 0.2s;
-    }
-
-    .pollution-record:hover {
-        transform: translateX(5px);
-    }
-</style>
 
 <div class="map-container">
     <div id="map"></div>
@@ -95,49 +15,61 @@
 
 
     <div class="side-panel">
-        <div class="filter-panel">
-            <div class="d-flex justify-content-between align-items-center filter-header"
-                 role="button"
-                 data-bs-toggle="collapse" 
-                 data-bs-target="#filterOptions" 
-                 aria-expanded="false">
-                <h5 class="text-white mb-0">Filtreleme</h5>
-                <i class="fas fa-chevron-down text-white"></i>
-            </div>
-            
-            <div class="collapse" id="filterOptions">
-                <div class="filter-section mt-3">
-                    <label for="metalType" class="text-white">Metal Türü</label>
-                    <select id="metalType" class="form-control">
-                        <option value="">Tümü</option>
-                        <option value="Kurşun">Kurşun (Pb)</option>
-                        <option value="Kadmiyum">Kadmiyum (Cd)</option>
-                        <option value="Civa">Civa (Hg)</option>
-                        <option value="Arsenik">Arsenik (As)</option>
-                        <option value="Krom">Krom (Cr)</option>
-                        <option value="Bakır">Bakır (Cu)</option>
-                        <option value="Nikel">Nikel (Ni)</option>
-                        <option value="Çinko">Çinko (Zn)</option>
-                    </select>
+        <div class="side-panel-content">
+            <div class="filter-panel">
+                <div class="d-flex justify-content-between align-items-center filter-header"
+                     role="button"
+                     data-bs-toggle="collapse" 
+                     data-bs-target="#filterOptions" 
+                     aria-expanded="false">
+                    <h5 class="text-white mb-0">Filtreleme</h5>
+                    <i class="fas fa-chevron-down text-white"></i>
                 </div>
+                
+                <div class="collapse" id="filterOptions">
+                    <div class="filter-section mt-3">
+                        <label for="metalType" class="text-white">Metal Türü</label>
+                        <select id="metalType" class="form-control">
+                            <option value="">Tümü</option>
+                            <option value="Kurşun">Kurşun (Pb)</option>
+                            <option value="Kadmiyum">Kadmiyum (Cd)</option>
+                            <option value="Civa">Civa (Hg)</option>
+                            <option value="Arsenik">Arsenik (As)</option>
+                            <option value="Krom">Krom (Cr)</option>
+                            <option value="Bakır">Bakır (Cu)</option>
+                            <option value="Nikel">Nikel (Ni)</option>
+                            <option value="Çinko">Çinko (Zn)</option>
+                        </select>
+                    </div>
 
-                <div class="filter-section">
-                    <label for="year" class="text-white">Yıl</label>
-                    <select id="year" class="form-control">
-                        <option value="">Tümü</option>
-                        @for (int year = 2025; year >= 1960; year--)
-                        {
-                            <option value="@year">@year</option>
-                        }
-                    </select>
-                </div>
+                    <div class="filter-section">
+                        <label for="year" class="text-white">Yıl</label>
+                        <select id="year" class="form-control">
+                            <option value="">Tümü</option>
+                            @for (int year = 2025; year >= 1960; year--)
+                            {
+                                <option value="@year">@year</option>
+                            }
+                        </select>
+                    </div>
 
-                <div class="filter-buttons">
-                    <button class="reset-filter" onclick="resetFilters()">
-                        <i class="fas fa-undo me-2"></i>Sıfırla
-                    </button>
+                    <div class="filter-buttons">
+                        <button class="reset-filter" onclick="resetFilters()">
+                            <i class="fas fa-undo me-2"></i>Sıfırla
+                        </button>
+                    </div>
                 </div>
             </div>
+
+            <div id="recordsPanel" class="records-panel mt-4">
+                <!-- Records will be dynamically inserted here -->
+            </div>
+        </div>
+        <div class="side-panel-footer">
+            <button id="addDataButton" class="add-data-button">
+                <i class="fas fa-plus"></i>
+                Yeni Veri Ekle
+            </button>
         </div>
     </div>
 
