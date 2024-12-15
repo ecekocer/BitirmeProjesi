@@ -27,11 +27,12 @@ namespace BitirmeProjesi.Controllers
                 var data = await _context.PollutionDatas
                     .Select(p => new
                     {
+                        p.Id,
                         p.Latitude,
                         p.Longitude,
                         p.MetalType,
                         p.Value,
-                        p.DataRecorded
+                        p.Year
                     })
                     .ToListAsync();
 
@@ -39,7 +40,7 @@ namespace BitirmeProjesi.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Veriler alınırken bir hata oluştu");
+                return Json(new { error = ex.Message });
             }
         }
 

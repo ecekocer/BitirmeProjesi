@@ -55,6 +55,38 @@
         background-color: rgba(255, 255, 255, 0.1);
         border-radius: 5px;
     }
+
+    .records-container {
+        max-height: calc(100vh - 400px);
+        overflow-y: auto;
+        padding-right: 10px;
+    }
+
+    .records-container::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .records-container::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+    }
+
+    .records-container::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 4px;
+    }
+
+    .records-container::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.4);
+    }
+
+    .pollution-record {
+        transition: transform 0.2s;
+    }
+
+    .pollution-record:hover {
+        transform: translateX(5px);
+    }
 </style>
 
 <div class="map-container">

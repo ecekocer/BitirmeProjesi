@@ -104,10 +104,48 @@ function loadPollutionData() {
                     const body = document.body;
                     const isPanelOpen = sidePanel.classList.contains('open');
 
-                    if (isPanelOpen) {
-                        sidePanel.classList.remove('open');
-                        body.classList.remove('panel-open');
-                    } else {
+                    // Fetch pollution data for this location
+                    fetch(`/PollutionEntry/GetPollutionDataByCoordinates?latitude=${item.latitude}&longitude=${item.longitude}`)
+                        .then(response => response.json())
+                        .then(result => {
+                            if (result.success) {
+                                // Create the HTML content for the records
+                                const recordsHtml = result.data.map(record => `
+                                    <div class="pollution-record mb-3 p-3 bg-white rounded shadow-sm">
+                                        <div class="d-flex justify-content-between">
+                                            <strong>Yıl:</strong> ${record.year}
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <strong>Metal Türü:</strong> ${record.metalType}
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <strong>Değer:</strong> ${record.value}
+                                        </div>
+                                    </div>
+                                `).join('');
+
+                                // Update the side panel content
+                                const filterPanel = document.querySelector('.filter-panel');
+                                const recordsPanel = document.createElement('div');
+                                recordsPanel.className = 'records-panel mt-4';
+                                recordsPanel.innerHTML = `
+                                    <h5 class="text-white mb-3">Konum Kayıtları</h5>
+                                    <div class="records-container">
+                                        ${recordsHtml}
+                                    </div>
+                                `;
+
+                                // Remove existing records panel if any
+                                const existingRecordsPanel = filterPanel.querySelector('.records-panel');
+                                if (existingRecordsPanel) {
+                                    existingRecordsPanel.remove();
+                                }
+
+                                filterPanel.appendChild(recordsPanel);
+                            }
+                        });
+
+                    if (!isPanelOpen) {
                         sidePanel.classList.add('open');
                         body.classList.add('panel-open');
                     }

@@ -134,7 +134,7 @@ namespace BitirmeProjesi.Controllers
                     })
                     .ToListAsync();
 
-                // İstatistiksel verileri hesapla
+                // statistiksel verileri hesapla
                 var statistics = new
                 {
                     AveragePollution = await query.AverageAsync(p => p.Value),
@@ -162,6 +162,32 @@ namespace BitirmeProjesi.Controllers
                     message = "Filtreleme işlemi sırasında bir hata oluştu.",
                     error = ex.Message 
                 });
+            }
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetPollutionDataByCoordinates(float latitude, float longitude)
+        {
+            try
+            {
+                var data = await _context.PollutionDatas
+                    .Where(p => p.Latitude == latitude && p.Longitude == longitude)
+                    .Select(p => new
+                    {
+                        p.Year,
+                        p.MetalType,
+                        p.Value,
+                        p.DataRecorded
+                    })
+                    .OrderByDescending(p => p.DataRecorded)
+                    .ToListAsync();
+
+                return Json(new { success = true, data = data });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
             }
         }
     }
