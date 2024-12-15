@@ -32,6 +32,8 @@ var currentPopup = null;
 // Haritadaki tüm markerları tutacak bir dizi oluşturalım
 var markers = [];
 
+var currentMarkerData = null; // Aktif marker verilerini saklamak için global değişken
+
 function isPointInTurkey(lat, lng) {
     const turkeyBounds = [
         [36.0, 26.0],
@@ -84,6 +86,69 @@ var markerClusterGroup = L.markerClusterGroup({
 
 map.addLayer(markerClusterGroup);
 
+// Global fetchLocationData function
+function fetchLocationData(latitude, longitude, filters = {}) {
+    const queryParams = new URLSearchParams({
+        latitude: latitude,
+        longitude: longitude,
+        ...filters
+    });
+
+    fetch(`/PollutionEntry/GetPollutionDataByCoordinates?${queryParams}`)
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                // Create the HTML content for the records
+                const recordsHtml = result.data.length > 0 ? result.data.map(record => `
+                    <div class="pollution-record mb-3 p-3 bg-white rounded shadow-sm">
+                        <div class="d-flex justify-content-between">
+                            <strong>Yıl:</strong> ${record.year}
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <strong>Metal Türü:</strong> ${record.metalType}
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <strong>Değer:</strong> ${record.value}
+                        </div>
+                    </div>
+                `).join('') : '<div class="text-white">Bu konumda filtrelere uygun veri bulunamadı.</div>';
+
+                // Update the side panel content
+                const filterPanel = document.querySelector('.filter-panel');
+                const recordsPanel = document.createElement('div');
+                recordsPanel.className = 'records-panel mt-4';
+                recordsPanel.innerHTML = `
+                    <h5 class="text-white mb-3">Konum Kayıtları</h5>
+                    <div class="records-container">
+                        ${recordsHtml}
+                    </div>
+                `;
+
+                // Remove existing records panel if any
+                const existingRecordsPanel = filterPanel.querySelector('.records-panel');
+                if (existingRecordsPanel) {
+                    existingRecordsPanel.remove();
+                }
+
+                filterPanel.appendChild(recordsPanel);
+            }
+        });
+}
+
+function resetFilters() {
+    const metalTypeSelect = document.getElementById('metalType');
+    const yearSelect = document.getElementById('year');
+    
+    // Filtreleri sıfırla
+    metalTypeSelect.value = '';
+    yearSelect.value = '';
+
+    // Eğer aktif bir marker varsa, verilerini yeniden yükle
+    if (currentMarkerData) {
+        fetchLocationData(currentMarkerData.latitude, currentMarkerData.longitude);
+    }
+}
+
 // Veritabanından verileri çekip marker'ları oluştur
 function loadPollutionData() {
     fetch('/Home/GetPollutionData')
@@ -104,46 +169,34 @@ function loadPollutionData() {
                     const body = document.body;
                     const isPanelOpen = sidePanel.classList.contains('open');
 
-                    // Fetch pollution data for this location
-                    fetch(`/PollutionEntry/GetPollutionDataByCoordinates?latitude=${item.latitude}&longitude=${item.longitude}`)
-                        .then(response => response.json())
-                        .then(result => {
-                            if (result.success) {
-                                // Create the HTML content for the records
-                                const recordsHtml = result.data.map(record => `
-                                    <div class="pollution-record mb-3 p-3 bg-white rounded shadow-sm">
-                                        <div class="d-flex justify-content-between">
-                                            <strong>Yıl:</strong> ${record.year}
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <strong>Metal Türü:</strong> ${record.metalType}
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <strong>Değer:</strong> ${record.value}
-                                        </div>
-                                    </div>
-                                `).join('');
+                    // Aktif marker verilerini sakla
+                    currentMarkerData = item;
 
-                                // Update the side panel content
-                                const filterPanel = document.querySelector('.filter-panel');
-                                const recordsPanel = document.createElement('div');
-                                recordsPanel.className = 'records-panel mt-4';
-                                recordsPanel.innerHTML = `
-                                    <h5 class="text-white mb-3">Konum Kayıtları</h5>
-                                    <div class="records-container">
-                                        ${recordsHtml}
-                                    </div>
-                                `;
+                    // Initial data fetch
+                    fetchLocationData(item.latitude, item.longitude);
 
-                                // Remove existing records panel if any
-                                const existingRecordsPanel = filterPanel.querySelector('.records-panel');
-                                if (existingRecordsPanel) {
-                                    existingRecordsPanel.remove();
-                                }
+                    // Add event listeners to filter elements
+                    const metalTypeSelect = document.getElementById('metalType');
+                    const yearSelect = document.getElementById('year');
 
-                                filterPanel.appendChild(recordsPanel);
-                            }
-                        });
+                    function applyLocationFilters() {
+                        const filters = {};
+                        
+                        // Sadece seçili değerleri filtrelere ekle
+                        if (metalTypeSelect.value) {
+                            filters.metalType = metalTypeSelect.value;
+                        }
+                        
+                        if (yearSelect.value) {
+                            filters.year = yearSelect.value;
+                        }
+
+                        fetchLocationData(item.latitude, item.longitude, filters);
+                    }
+
+                    // Add event listeners
+                    metalTypeSelect.addEventListener('change', applyLocationFilters);
+                    yearSelect.addEventListener('change', applyLocationFilters);
 
                     if (!isPanelOpen) {
                         sidePanel.classList.add('open');

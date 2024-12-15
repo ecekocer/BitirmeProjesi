@@ -167,18 +167,38 @@ namespace BitirmeProjesi.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> GetPollutionDataByCoordinates(float latitude, float longitude)
+        public async Task<IActionResult> GetPollutionDataByCoordinates(float latitude, float longitude, string? metalType = null, string? year = null)
         {
             try
             {
-                var data = await _context.PollutionDatas
-                    .Where(p => p.Latitude == latitude && p.Longitude == longitude)
+                var query = _context.PollutionDatas
+                    .Where(p => p.Latitude == latitude && p.Longitude == longitude);
+
+                // Metal türüne göre filtrele
+                if (!string.IsNullOrEmpty(metalType))
+                {
+                    query = query.Where(p => p.MetalType == metalType);
+                }
+
+                // Yıla göre filtrele
+                if (!string.IsNullOrEmpty(year) && year != "0" && year != "")
+                {
+                    if (int.TryParse(year, out int yearValue))
+                    {
+                        query = query.Where(p => p.Year == yearValue);
+                    }
+                }
+
+                var data = await query
                     .Select(p => new
                     {
                         p.Year,
                         p.MetalType,
                         p.Value,
-                        p.DataRecorded
+                        p.DataRecorded,
+                        PollutionLevel = p.Value < 50 ? "Düşük" :
+                                       p.Value < 100 ? "Orta" :
+                                       p.Value < 150 ? "Yüksek" : "Kritik"
                     })
                     .OrderByDescending(p => p.DataRecorded)
                     .ToListAsync();
