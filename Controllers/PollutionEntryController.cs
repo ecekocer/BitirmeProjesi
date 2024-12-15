@@ -22,7 +22,8 @@ namespace BitirmeProjesi.Controllers
             var viewModel = new PollutionEntryViewModel
             {
                 Latitude = latitude.HasValue ? (float)latitude.Value : 0f,
-                Longitude = longitude.HasValue ? (float)longitude.Value : 0f
+                Longitude = longitude.HasValue ? (float)longitude.Value : 0f,
+                Year = DateTime.Now.Year
             };
             return View(viewModel);
         }
@@ -41,10 +42,11 @@ namespace BitirmeProjesi.Controllers
                         Longitude = viewModel.Longitude,
                         MetalType = viewModel.MetalType,
                         Value = viewModel.Value,
+                        Year = viewModel.Year,
                         DataRecorded = DateTime.Now,
                         EnteredById = User.FindFirstValue(ClaimTypes.NameIdentifier),
-                        City = null,
-                        Region = null
+                        City = "",
+                        Region = ""
                     };
                     
                     _context.Add(pollutionData);
@@ -59,7 +61,12 @@ namespace BitirmeProjesi.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, "Veri kaydedilirken bir hata oluştu: " + ex.Message);
+                // İç exception'ı da göster
+                var message = ex.InnerException != null 
+                    ? $"Veri kaydedilirken bir hata oluştu: {ex.Message} - İç Hata: {ex.InnerException.Message}"
+                    : $"Veri kaydedilirken bir hata oluştu: {ex.Message}";
+                    
+                ModelState.AddModelError(string.Empty, message);
                 return View(viewModel);
             }
         }
@@ -81,7 +88,7 @@ namespace BitirmeProjesi.Controllers
                 if (!string.IsNullOrEmpty(filters.Year))
                 {
                     int year = int.Parse(filters.Year);
-                    query = query.Where(p => p.DataRecorded.Year == year);
+                    query = query.Where(p => p.Year == year);
                 }
 
                 // Bölgeye göre filtrele
@@ -116,6 +123,7 @@ namespace BitirmeProjesi.Controllers
                         p.MetalType,
                         PollutionValue = p.Value,
                         Date = p.DataRecorded,
+                        p.Year,
                         p.Latitude,
                         p.Longitude,
                         p.City,

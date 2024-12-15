@@ -12,6 +12,10 @@ namespace BitirmeProjesi.Models
         public string MetalType { get; set; }
         public float Value { get; set; }
         public DateTime DataRecorded { get; set; }
+        
+        [Range(1960, 9999)] // 9999 yerine runtime'da current year kontrolü yapılacak
+        public int Year { get; set; }
+        
         public string EnteredById { get; set; }
         public string City { get; set; }
         public string Region { get; set; }

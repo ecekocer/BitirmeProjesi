@@ -25,6 +25,36 @@
     .marker-cluster span {
         color: white;
     }
+
+    .btn-link:focus {
+        box-shadow: none;
+    }
+
+    .btn-link:hover {
+        opacity: 0.8;
+    }
+
+    /* Collapse icon animasyonu */
+    [aria-expanded="true"] .fa-chevron-down {
+        transform: rotate(180deg);
+        transition: transform 0.3s ease;
+    }
+
+    [aria-expanded="false"] .fa-chevron-down {
+        transform: rotate(0deg);
+        transition: transform 0.3s ease;
+    }
+
+    .filter-header {
+        cursor: pointer;
+        padding: 10px;
+        user-select: none;
+    }
+
+    .filter-header:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+    }
 </style>
 
 <div class="map-container">
@@ -34,42 +64,50 @@
 
     <div class="side-panel">
         <div class="filter-panel">
-            <h4 class="text-white mb-4">Filtreleme Seçenekleri</h4>
+            <div class="d-flex justify-content-between align-items-center filter-header"
+                 role="button"
+                 data-bs-toggle="collapse" 
+                 data-bs-target="#filterOptions" 
+                 aria-expanded="false">
+                <h5 class="text-white mb-0">Filtreleme</h5>
+                <i class="fas fa-chevron-down text-white"></i>
+            </div>
             
-            <div class="filter-section">
-                <label for="metalType" class="text-white">Metal Türü</label>
-                <select id="metalType" class="form-control">
-                    <option value="">Tümü</option>
-                    <option value="Pb">Kurşun (Pb)</option>
-                    <option value="Cd">Kadmiyum (Cd)</option>
-                    <option value="Hg">Civa (Hg)</option>
-                    <option value="As">Arsenik (As)</option>
-                    <option value="Cr">Krom (Cr)</option>
-                    <option value="Cu">Bakır (Cu)</option>
-                    <option value="Ni">Nikel (Ni)</option>
-                    <option value="Zn">Çinko (Zn)</option>
-                </select>
-            </div>
+            <div class="collapse" id="filterOptions">
+                <div class="filter-section mt-3">
+                    <label for="metalType" class="text-white">Metal Türü</label>
+                    <select id="metalType" class="form-control">
+                        <option value="">Tümü</option>
+                        <option value="Pb">Kurşun (Pb)</option>
+                        <option value="Cd">Kadmiyum (Cd)</option>
+                        <option value="Hg">Civa (Hg)</option>
+                        <option value="As">Arsenik (As)</option>
+                        <option value="Cr">Krom (Cr)</option>
+                        <option value="Cu">Bakır (Cu)</option>
+                        <option value="Ni">Nikel (Ni)</option>
+                        <option value="Zn">Çinko (Zn)</option>
+                    </select>
+                </div>
 
-            <div class="filter-section">
-                <label for="year" class="text-white">Yıl</label>
-                <select id="year" class="form-control">
-                    <option value="">Tümü</option>
-                    @for (int year = 2025; year >= 1960; year--)
-                    {
-                        <option value="@year">@year</option>
-                    }
-                </select>
-            </div>
+                <div class="filter-section">
+                    <label for="year" class="text-white">Yıl</label>
+                    <select id="year" class="form-control">
+                        <option value="">Tümü</option>
+                        @for (int year = 2025; year >= 1960; year--)
+                        {
+                            <option value="@year">@year</option>
+                        }
+                    </select>
+                </div>
 
-
-            <div class="filter-buttons">
-                <button class="apply-filter" onclick="applyFilters()">
-                    <i class="fas fa-filter me-2"></i>Filtrele
-                </button>
-                <button class="reset-filter" onclick="resetFilters()">
-                    <i class="fas fa-undo me-2"></i>Sıfırla
-                </button>
+                <div class="filter-buttons">
+                    <button class="apply-filter" onclick="applyFilters()">
+                        <i class="fas fa-filter me-2"></i>Filtrele
+                    </button>
+                    <button class="reset-filter" onclick="resetFilters()">
+                        <i class="fas fa-undo me-2"></i>Sıfırla
+                    </button>
+                </div>
             </div>
         </div>
     </div>

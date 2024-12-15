@@ -15,5 +15,9 @@ namespace BitirmeProjesi.Models.ViewModels
         
         [Required(ErrorMessage = "Metal değeri girilmelidir")]
         public float Value { get; set; }
+
+        [Required(ErrorMessage = "Yıl alanı zorunludur")]
+        [Range(1960, 2025, ErrorMessage = "Yıl 1960 ile günümüz arasında olmalıdır")]
+        public int Year { get; set; } = DateTime.Now.Year; // Default değer olarak güncel yıl
     }
 } 

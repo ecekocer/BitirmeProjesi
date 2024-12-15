@@ -42,10 +42,20 @@ function isPointInTurkey(lat, lng) {
 }
 
 map.on('click', function (e) {
-    if (popupOpen) {
-        map.closePopup();
-        popupOpen = false;
-        currentPopup = null;
+    // Eğer tıklama marker üzerinde ise, bu eventi işleme
+    if (e.originalEvent.target.closest('.leaflet-marker-icon') || 
+        e.originalEvent.target.closest('.leaflet-interactive')) {
+        return;
+    }
+
+    // Side panel açık mı kontrol et
+    const sidePanel = document.querySelector('.side-panel');
+    const body = document.body;
+    const isPanelOpen = sidePanel.classList.contains('open');
+    
+    if (isPanelOpen) {
+        sidePanel.classList.remove('open');
+        body.classList.remove('panel-open');
     } else if (isPointInTurkey(e.latlng.lat, e.latlng.lng)) {
         var latlng = e.latlng;
         showPopup(latlng);
@@ -89,15 +99,22 @@ function loadPollutionData() {
                     fillOpacity: 0.4
                 });
 
-                circleMarker.bindPopup(`
-                    <div class="popup-content">
-                        <h6>Ağır Metal Verisi</h6>
-                        <p>Metal: ${item.metalType}</p>
-                        <p>Değer: ${item.value.toFixed(6)} mg/L</p>
-                        <p>Tarih: ${new Date(item.dataRecorded).toLocaleDateString('tr-TR')}</p>
-                        <p>Koordinatlar: ${item.latitude.toFixed(6)}, ${item.longitude.toFixed(6)}</p>
-                    </div>
-                `);
+                circleMarker.on('click', function(e) {
+                    const sidePanel = document.querySelector('.side-panel');
+                    const body = document.body;
+                    const isPanelOpen = sidePanel.classList.contains('open');
+
+                    if (isPanelOpen) {
+                        sidePanel.classList.remove('open');
+                        body.classList.remove('panel-open');
+                    } else {
+                        sidePanel.classList.add('open');
+                        body.classList.add('panel-open');
+                    }
+                    
+                    // Event'in harita click event'ine ulaşmasını engelle
+                    L.DomEvent.stopPropagation(e);
+                });
 
                 markerClusterGroup.addLayer(circleMarker);
             });
@@ -113,12 +130,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const body = document.body;
 
     panelToggle.addEventListener('click', function() {
-        sidePanel.classList.toggle('open');
-        body.classList.toggle('panel-open');
+        const isPanelOpen = sidePanel.classList.contains('open');
+        if (isPanelOpen) {
+            sidePanel.classList.remove('open');
+            body.classList.remove('panel-open');
+        } else {
+            sidePanel.classList.add('open');
+            body.classList.add('panel-open');
+        }
     });
 
     // Panel dışına tıklandığında paneli kapat
     document.addEventListener('click', function(event) {
+        // Marker veya cluster'a tıklandığında paneli kapatma
+        if (event.target.closest('.leaflet-marker-icon') || 
+            event.target.closest('.leaflet-interactive')) {
+            return;
+        }
+        
         if (!sidePanel.contains(event.target) && !panelToggle.contains(event.target)) {
             sidePanel.classList.remove('open');
             body.classList.remove('panel-open');

@@ -34,6 +34,14 @@ namespace BitirmeProjesi.Models
             modelBuilder.Entity<PollutionData>()
                 .Property(p => p.Value)
                 .HasColumnType("float(53)");  // SQL Server'da double precision float
+
+            modelBuilder.Entity<PollutionData>()
+                .Property(p => p.City)
+                .IsRequired(false);  // City alanı null olabilir
+
+            modelBuilder.Entity<PollutionData>()
+                .Property(p => p.Region)
+                .IsRequired(false);  // Region alanı null olabilir
         }
     }
 }

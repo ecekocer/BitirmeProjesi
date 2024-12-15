@@ -64,6 +64,15 @@
                     <span asp-validation-for="Value" class="text-danger"></span>
                 </div>
 
+                <!-- Year Input -->
+                <div class="form-outline mb-4">
+                    <label asp-for="Year" class="form-label">Yıl</label>
+                    <input asp-for="Year" class="form-control" type="number" 
+                           min="1960" max="@DateTime.Now.Year" 
+                           value="@DateTime.Now.Year" required>
+                    <span asp-validation-for="Year" class="text-danger"></span>
+                </div>
+
                 <!-- Submit Button -->
                 <div class="text-center">
                     <button type="submit" class="btn btn-primary btn-lg">Kaydet</button>
@@ -78,6 +87,25 @@
         document.getElementById('MetalType').addEventListener('change', function() {
             const unit = "mg/L";  // Tüm metaller için birim mg/L
             document.getElementById('metalUnit').textContent = unit;
+        });
+
+        // Yıl alanı için maksimum değeri dinamik olarak ayarla
+        document.addEventListener('DOMContentLoaded', function() {
+            const yearInput = document.getElementById('Year');
+            const currentYear = new Date().getFullYear();
+            yearInput.max = currentYear;
+            
+            // Geçersiz yıl girildiğinde uyarı ver
+            yearInput.addEventListener('input', function() {
+                const value = parseInt(this.value);
+                if (value < 1960) {
+                    this.setCustomValidity('Yıl 1960\'dan küçük olamaz');
+                } else if (value > currentYear) {
+                    this.setCustomValidity('Yıl ' + currentYear + '\'dan büyük olamaz');
+                } else {
+                    this.setCustomValidity('');
+                }
+            });
         });
     </script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

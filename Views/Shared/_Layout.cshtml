@@ -115,41 +115,11 @@
     <script src="https://kit.fontawesome.com/d860dfcff7.js" crossorigin="anonymous"></script>
 
     <script>
-        // Türkiye'nin şehirleri
-        const cities = {
-            marmara: ['İstanbul', 'Bursa', 'Kocaeli', 'Tekirdağ', 'Edirne', 'Kırklareli', 'Balıkesir', 'Çanakkale', 'Yalova', 'Sakarya', 'Bilecik'],
-            ege: ['İzmir', 'Aydın', 'Muğla', 'Denizli', 'Manisa', 'Uşak', 'Kütahya', 'Afyonkarahisar'],
-            akdeniz: ['Antalya', 'Mersin', 'Adana', 'Hatay', 'Osmaniye', 'Kahramanmaraş', 'Burdur', 'Isparta'],
-            ic_anadolu: ['Ankara', 'Konya', 'Kayseri', 'Eskişehir', 'Sivas', 'Kırıkkale', 'Aksaray', 'Karaman', 'Kırşehir', 'Niğde', 'Nevşehir', 'Yozgat', 'Çankırı'],
-            karadeniz: ['Samsun', 'Trabzon', 'Rize', 'Ordu', 'Giresun', 'Amasya', 'Sinop', 'Tokat', 'Çorum', 'Kastamonu', 'Bayburt', 'Gümüşhane', 'Artvin', 'Bartın', 'Karabük', 'Zonguldak', 'Bolu', 'Düzce'],
-            dogu_anadolu: ['Erzurum', 'Van', 'Kars', 'Ağrı', 'Ardahan', 'Iğdır', 'Erzincan', 'Elazığ', 'Malatya', 'Tunceli', 'Bingöl', 'Muş', 'Bitlis', 'Hakkari'],
-            guneydogu_anadolu: ['Diyarbakır', 'Şanlıurfa', 'Gaziantep', 'Mardin', 'Batman', 'Siirt', 'Şırnak', 'Adıyaman', 'Kilis']
-        };
-
-        // Bölge seçildiğinde şehirleri güncelle
-        document.getElementById('region').addEventListener('change', function() {
-            const citySelect = document.getElementById('city');
-            citySelect.innerHTML = '<option value="">Tümü</option>';
-            
-            const selectedRegion = this.value;
-            if (selectedRegion && cities[selectedRegion]) {
-                cities[selectedRegion].forEach(city => {
-                    const option = document.createElement('option');
-                    option.value = city.toLowerCase();
-                    option.textContent = city;
-                    citySelect.appendChild(option);
-                });
-            }
-        });
-
         // Filtreleri uygula
         function applyFilters() {
             const filters = {
                 metalType: document.getElementById('metalType').value,
-                year: document.getElementById('year').value,
-                region: document.getElementById('region').value,
-                city: document.getElementById('city').value,
-                pollutionLevel: document.getElementById('pollutionLevel').value
+                year: document.getElementById('year').value
             };
 
             // AJAX isteği ile filtreleri sunucuya gönder
@@ -177,9 +147,6 @@
         function resetFilters() {
             document.getElementById('metalType').value = '';
             document.getElementById('year').value = '';
-            document.getElementById('region').value = '';
-            document.getElementById('city').value = '';
-            document.getElementById('pollutionLevel').value = '';
             
             // Varsayılan verileri getir
             applyFilters();
