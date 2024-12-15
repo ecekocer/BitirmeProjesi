@@ -27,99 +27,54 @@
     }
 </style>
 
-<div id="map"></div>
+<div class="map-container">
+    <div id="map"></div>
+</div>
+
+
+    <div class="side-panel">
+        <div class="filter-panel">
+            <h4 class="text-white mb-4">Filtreleme Seçenekleri</h4>
+            
+            <div class="filter-section">
+                <label for="metalType" class="text-white">Metal Türü</label>
+                <select id="metalType" class="form-control">
+                    <option value="">Tümü</option>
+                    <option value="Pb">Kurşun (Pb)</option>
+                    <option value="Cd">Kadmiyum (Cd)</option>
+                    <option value="Hg">Civa (Hg)</option>
+                    <option value="As">Arsenik (As)</option>
+                    <option value="Cr">Krom (Cr)</option>
+                    <option value="Cu">Bakır (Cu)</option>
+                    <option value="Ni">Nikel (Ni)</option>
+                    <option value="Zn">Çinko (Zn)</option>
+                </select>
+            </div>
+
+            <div class="filter-section">
+                <label for="year" class="text-white">Yıl</label>
+                <select id="year" class="form-control">
+                    <option value="">Tümü</option>
+                    @for (int year = 2025; year >= 1960; year--)
+                    {
+                        <option value="@year">@year</option>
+                    }
+                </select>
+            </div>
+
+
+            <div class="filter-buttons">
+                <button class="apply-filter" onclick="applyFilters()">
+                    <i class="fas fa-filter me-2"></i>Filtrele
+                </button>
+                <button class="reset-filter" onclick="resetFilters()">
+                    <i class="fas fa-undo me-2"></i>Sıfırla
+                </button>
+            </div>
+        </div>
+    </div>
 
 <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
 <!-- MarkerCluster JS -->
 <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
-
-<script>
-    var map = L.map('map').setView([38.925533, 34.866287], 7);
-    const mapUrl = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-
-    L.tileLayer(mapUrl, {
-        maxZoom: 18,
-        attribution: '&copy; <a href="https://www.opentopomap.org/">OpenTopoMap</a> contributors'
-    }).addTo(map);
-
-    var popupOpen = false;
-    var currentPopup = null;
-    
-    // Haritadaki tüm markerları tutacak bir dizi oluşturalım
-    var markers = [];
-
-    function isPointInTurkey(lat, lng) {
-        const turkeyBounds = [
-            [36.0, 26.0],
-            [42.1, 45.0]
-        ];
-        return lat >= turkeyBounds[0][0] && lat <= turkeyBounds[1][0] &&
-            lng >= turkeyBounds[0][1] && lng <= turkeyBounds[1][1];
-    }
-
-    map.on('click', function (e) {
-        if (popupOpen) {
-            map.closePopup();
-            popupOpen = false;
-            currentPopup = null;
-        } else if (isPointInTurkey(e.latlng.lat, e.latlng.lng)) {
-            var latlng = e.latlng;
-            showPopup(latlng);
-        } else {
-            alert('Sadece Türkiye sınırları içinde bir nokta seçebilirsiniz.');
-        }
-    });
-
-    function showPopup(latlng) {
-        window.location.href = `/PollutionEntry/Create?latitude=${latlng.lat.toFixed(6)}&longitude=${latlng.lng.toFixed(6)}`;
-    }
-
-    // Marker cluster group oluşturma
-    var markerClusterGroup = L.markerClusterGroup({
-        maxClusterRadius: 80,
-        iconCreateFunction: function(cluster) {
-            var childCount = cluster.getChildCount();
-            var size = 40;
-            return L.divIcon({
-                html: '<div style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><span>' + childCount + '</span></div>',
-                className: 'marker-cluster',
-                iconSize: new L.Point(size, size)
-            });
-        }
-    });
-
-    map.addLayer(markerClusterGroup);
-
-    // Veritabanından verileri çekip marker'ları oluştur
-    function loadPollutionData() {
-        fetch('/Home/GetPollutionData')
-            .then(response => response.json())
-            .then(data => {
-                data.forEach(item => {
-                    var circleMarker = L.circleMarker([item.latitude, item.longitude], {
-                        radius: 8,
-                        fillColor: '#000080',  // Koyu mavi
-                        color: '#000080',
-                        weight: 1,
-                        opacity: 1,
-                        fillOpacity: 0.4
-                    });
-
-                    circleMarker.bindPopup(`
-                        <div class="popup-content">
-                            <h6>Ağır Metal Verisi</h6>
-                            <p>Metal: ${item.metalType}</p>
-                            <p>Değer: ${item.value.toFixed(6)} mg/L</p>
-                            <p>Tarih: ${new Date(item.dataRecorded).toLocaleDateString('tr-TR')}</p>
-                            <p>Koordinatlar: ${item.latitude.toFixed(6)}, ${item.longitude.toFixed(6)}</p>
-                        </div>
-                    `);
-
-                    markerClusterGroup.addLayer(circleMarker);
-                });
-            });
-    }
-
-    // Sayfa yüklendiğinde verileri yükle
-    loadPollutionData();
-</script>
+<script src="~/js/map.js" asp-append-version="true"></script>
