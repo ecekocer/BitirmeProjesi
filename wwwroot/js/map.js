@@ -100,24 +100,53 @@ function fetchLocationData(latitude, longitude, filters = {}) {
             if (result.success) {
                 // Create the HTML content for the records
                 const recordsHtml = result.data.length > 0 ? result.data.map(record => `
-                    <div class="pollution-record mb-3 p-3 bg-white rounded shadow-sm">
-                        <div class="d-flex justify-content-between">
-                            <strong>Yıl:</strong> ${record.year}
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <strong>Metal Türü:</strong> ${record.metalType}
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <strong>Değer:</strong> ${record.value}
+                    <div class="pollution-record">
+                        <div class="record-content">
+                            <div class="record-row">
+                                <div class="record-item">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span class="item-value">${record.year}</span>
+                                </div>
+                                <div class="record-item">
+                                    <i class="fas fa-flask"></i>
+                                    <span class="item-value">${record.metalType}</span>
+                                </div>
+                                <div class="record-item">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span class="item-value">${record.value.toFixed(2)}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                `).join('') : '<div class="text-white">Bu konumda filtrelere uygun veri bulunamadı.</div>';
+                `).join('') : '<div class="no-data"><i class="fas fa-info-circle"></i> Bu konumda filtrelere uygun veri bulunamadı.</div>';
 
                 // Update records panel content
                 const recordsPanel = document.getElementById('recordsPanel');
                 recordsPanel.innerHTML = `
-                    <h5 class="text-white mb-3">Konum Kayıtları</h5>
+                    <div class="records-header">
+                        <h5 class="text-white mb-2">
+                            <i class="fas fa-map-marker-alt me-2"></i>
+                            Konum Kayıtları
+                        </h5>
+                        <div class="records-count text-white-50">
+                            ${result.data.length} kayıt
+                        </div>
+                    </div>
                     <div class="records-container">
+                        <div class="records-column-headers">
+                            <div class="column-header">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Yıl</span>
+                            </div>
+                            <div class="column-header">
+                                <i class="fas fa-flask"></i>
+                                <span>Metal Türü</span>
+                            </div>
+                            <div class="column-header">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Değer</span>
+                            </div>
+                        </div>
                         ${recordsHtml}
                     </div>
                 `;
