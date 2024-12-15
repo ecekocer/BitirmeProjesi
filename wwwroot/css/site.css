@@ -734,3 +734,7 @@ body.panel-open .map-container {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.leaflet-marker-pane {
+    z-index: 300 !important;
+}

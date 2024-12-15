@@ -74,8 +74,23 @@ function showPopup(latlng) {
 var markerClusterGroup = L.markerClusterGroup({
     maxClusterRadius: 80,
     iconCreateFunction: function(cluster) {
+
         var childCount = cluster.getChildCount();
-        var size = 40;
+        // Tüm cluster'lar için aynı boyut ve renk kullanılacak
+        var size = childCount * 15;
+        var color = '#000080'; // Koyu mavi
+        var circleSize = childCount * 15;
+
+        if(childCount > 10){
+            circleSize = 100;
+            size = 100;
+        }
+
+        return L.divIcon({
+            html: '<div style="background-color: rgba(0, 0, 128, 0.4); border-radius: 50%; width: ' + circleSize + 'px; height: ' + circleSize + 'px;"></div>',
+            className: 'marker-cluster',
+            iconSize: new L.Point(size, size)
+        });
         return L.divIcon({
             html: '<div style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><span>' + childCount + '</span></div>',
             className: 'marker-cluster',
@@ -182,13 +197,14 @@ function loadPollutionData() {
         .then(response => response.json())
         .then(data => {
             data.forEach(item => {
+                var {fillColor, color} = getMetalTypeColors(item.metalType)
                 var circleMarker = L.circleMarker([item.latitude, item.longitude], {
                     radius: 8,
-                    fillColor: '#000080',  // Koyu mavi
-                    color: '#000080',
+                    fillColor: fillColor,  // Koyu mavi
+                    color: color,
                     weight: 1,
                     opacity: 1,
-                    fillOpacity: 0.4
+                    fillOpacity: 1
                 });
 
                 circleMarker.on('click', function(e) {
@@ -272,3 +288,53 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+function getMetalTypeColors(metalType) {
+    switch(metalType) {
+        case "Arsenik":
+            return {
+                fillColor: "#FF4C4C", // Kırmızı
+                color: "#8B0000"      // Koyu kırmızı
+            };
+        case "Kadmiyum":
+            return {
+                fillColor: "#FFA500", // Turuncu
+                color: "#8B4513"      // Kahverengi
+            };
+        case "Krom":
+            return {
+                fillColor: "#4CAF50", // Yeşil
+                color: "#1B5E20"      // Koyu yeşil
+            };
+        case "Bakır":
+            return {
+                fillColor: "#CD7F32", // Bronz
+                color: "#8B4513"      // Kahverengi
+            };
+        case "Civa":
+            return {
+                fillColor: "#C0C0C0", // Gümüş
+                color: "#696969"      // Koyu gri
+            };
+        case "Nikel":
+            return {
+                fillColor: "#B8860B", // Altın sarısı
+                color: "#8B6914"      // Koyu altın
+            };
+        case "Kurşun":
+            return {
+                fillColor: "#778899", // Kurşuni
+                color: "#2F4F4F"      // Koyu kurşuni
+            };
+        case "Çinko":
+            return {
+                fillColor: "#87CEEB", // Açık mavi
+                color: "#4682B4"      // Çelik mavisi
+            };
+        default:
+            return {
+                fillColor: "#808080", // Gri
+                color: "#404040"      // Koyu gri
+            };
+    }
+}
